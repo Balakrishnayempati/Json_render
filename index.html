@@ -4,76 +4,179 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to right, #c3a017cd, #de1717a4);
+            margin: 0;
+            box-sizing: border-box;
+            padding: 20px;
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+        }
+        label {
+            font-size: 18px;
+            font-weight: bold;
+            margin: 10px 0;
+            display: block;
+        }
+        input {
+            width: 80%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #1a1818cb;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #368ec9;
+            color: white;
+            padding: 10px 20px;
+            margin: 10px 5px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #69c83a;
+
+        }
+        #get-out {
+            width: 80%;
+            margin: 20px auto;
+            padding: 15px;
+            border-radius: 10px;
+            background: white;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            text-align: left;
+        }
+        #hh {
+            color: #000000;
+            background-color:rgb(162, 24, 47);
+
+        }
+        p {
+            font-size: 16px;
+            padding: 5px 0;
+            border-bottom: 1px solid #ddd;
+        }
+        #dee:hover
+        {
+            background-color: red;
+        }
+    </style>
 </head>
 <body>
-    <button id="butt" onclick="get_details()">view data</button>
-    <button onclick="get_post()">post data</button>
-    <button onclick="put_data()">put data</button>
-    <button onclick="patch()">patch data</button>
-    <button onclick="dele()">delete data</button>
+    <h1>Product Management</h1>
 
-   <script>
-     let btn=document.getElementById("butt")
-     btn.addEventListener("click",async function get_details()
-    {
-        let dt=await fetch("http://localhost:3000/data_b")
-        let res=await dt.json()
-        console.log(res)
+    <label>Enter ID:</label>
+    <input id="id" type="text">
 
-        
-    })
-    let obj={
-        name:"hello",
-        age:28
-    }
-    async function get_post()
-    {
-        let dt=await fetch(" http://localhost:3000/data_b",
-        {
-            method:"POST",
-            headers:{
-                "Content-Type":"application/json"
-            },
-            body:JSON.stringify(obj)
-        })
-    }     
-    async function put_data()
-    
-    {
-        let obj={
-        city:"delhi"
-    }
-        let id=2
-        let dt=await fetch(`http://localhost:3000/data_b/${id}`,{
-            method:"PUT",
-            headers:{
-                "Content-Type":"application/json"
-            },
-            body:JSON.stringify(obj)
-        })
-    }
-    async function patch()
-    {
-        obj={
-            name:"jenny"
+    <label>Enter Name:</label>
+    <input id="name" type="text">
+
+    <label>Enter Age:</label>
+    <input id="age" type="text">
+
+    <label>Enter City:</label>
+    <input id="city" type="text">
+
+    <button onclick="get_details()">Get Data</button>
+    <button onclick="get_post()">Post Data</button>
+    <button onclick="put_data()">Put Data</button>
+    <button onclick="patch_data()">Patch Data</button>
+
+    <h2 id="hh">Delete Data</h2>
+    <label>Enter ID to Delete:</label>
+    <input id="delete-id" type="text">
+    <button id="dee" onclick="dele()">Delete Data</button>
+
+    <div id="get-out"></div>
+
+    <script>
+        let out = document.getElementById("get-out");
+
+        async function get_details()
+         {
+            alert("You want to see data")
+            let dt = await fetch("http://localhost:3000/data_b");
+            let res = await dt.json();
+            out.innerHTML = "<h2>Data in List</h2>";
+            if (res.length === 0) {
+                out.innerHTML += "<p>Empty List</p>";
+            } else {
+                res.forEach(item => {
+                    out.innerHTML += `<p><b>ID:</b> ${item.id}, <b>Name:</b> ${item.name}, <b>Age:</b> ${item.age}, <b>City:</b> ${item.city}</p>`;
+                });
+            }
         }
-        let id=2
-        let dt=await fetch(`http://localhost:3000/data_b/${id}`,{
-            method:"PATCH",
-            headers:{
-                "Content-Type":"application/json"
-            },
-            body:JSON.stringify(obj)
-        })
-    }
-    async function dele()
-    {
-        let dt=await fetch("http://localhost:3000/data_b/6",{
-            method:"DELETE"
 
-        })
-    }
+        async function get_post() {
+            alert("You want to post data to list")
+            let obj = {
+                id: document.getElementById("id").value,
+                name: document.getElementById("name").value,
+                age: document.getElementById("age").value,
+                city: document.getElementById("city").value
+            };
+            let dt = await fetch("http://localhost:3000/data_b", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(obj)
+            });
+            let res = await dt.json();
+            out.innerHTML = `<h2>Added Task</h2><p>ID: ${res.id}, Name: ${res.name}, Age: ${res.age}, City: ${res.city}</p>`;
+        }
 
+        async function put_data() {
+            alert("You want to put data to list")
+            let id = document.getElementById("id").value;
+            let obj = {
+                name: document.getElementById("name").value,
+                age: document.getElementById("age").value,
+                city: document.getElementById("city").value
+            };
+            let dt = await fetch(`http://localhost:3000/data_b/${id}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(obj)
+            });
+            let res = await dt.json();
+            out.innerHTML = `<h2>Updated Task (PUT)</h2><p>ID: ${id}, Name: ${res.name}, Age: ${res.age}, City: ${res.city}</p>`;
+        }
+
+        async function patch_data() {
+            alert("You want to pacth data to list")
+            let id = document.getElementById("id").value;
+            let obj = {};
+            if (document.getElementById("name").value) obj.name = document.getElementById("name").value;
+            if (document.getElementById("age").value) obj.age = document.getElementById("age").value;
+            if (document.getElementById("city").value) obj.city = document.getElementById("city").value;
+            let dt = await fetch(`http://localhost:3000/data_b/${id}`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(obj)
+            });
+            let res = await dt.json();
+            out.innerHTML = `<h2>Updated Task (PATCH)</h2><p>ID: ${id}, Name: ${res.name}, Age: ${res.age}, City: ${res.city}</p>`;
+        }
+
+        async function dele() {
+            let id = document.getElementById("delete-id").value;
+            await fetch(`http://localhost:3000/data_b/${id}`, {
+                method: "DELETE"
+            });
+            out.innerHTML = `<h2>Deleted Task</h2><p>Deleted ID: ${id}</p>`;
+        }
     </script>
 </body>
 </html>
