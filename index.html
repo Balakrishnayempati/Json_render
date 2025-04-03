@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <button id="butt" onclick="get_details()">view data</button>
+    <button onclick="get_post()">post data</button>
+    <button onclick="put_data()">put data</button>
+    <button onclick="patch()">patch data</button>
+    <button onclick="dele()">delete data</button>
+
+   <script>
+     let btn=document.getElementById("butt")
+     btn.addEventListener("click",async function get_details()
+    {
+        let dt=await fetch("http://localhost:3000/data_b")
+        let res=await dt.json()
+        console.log(res)
+
+        
+    })
+    let obj={
+        name:"hello",
+        age:28
+    }
+    async function get_post()
+    {
+        let dt=await fetch(" http://localhost:3000/data_b",
+        {
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body:JSON.stringify(obj)
+        })
+    }     
+    async function put_data()
+    
+    {
+        let obj={
+        city:"delhi"
+    }
+        let id=2
+        let dt=await fetch(`http://localhost:3000/data_b/${id}`,{
+            method:"PUT",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body:JSON.stringify(obj)
+        })
+    }
+    async function patch()
+    {
+        obj={
+            name:"jenny"
+        }
+        let id=2
+        let dt=await fetch(`http://localhost:3000/data_b/${id}`,{
+            method:"PATCH",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body:JSON.stringify(obj)
+        })
+    }
+    async function dele()
+    {
+        let dt=await fetch("http://localhost:3000/data_b/6",{
+            method:"DELETE"
+
+        })
+    }
+
+    </script>
+</body>
+</html>
